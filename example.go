@@ -35,8 +35,8 @@ func main() {
 		// Input *	Weights ->	Weighted Outputs:
 		// ⎡1 1⎤	⎡w1⎤		⎡wo1⎤
 		// ⎢0 1⎥	⎣w2⎦		⎢wo2⎥
-		// ⎢1 0⎥				⎢wo3⎥
-		// ⎣0 0⎦				⎣wo4⎦
+		// ⎢1 0⎥			⎢wo3⎥
+		// ⎣0 0⎦			⎣wo4⎦
 		weightedOutputs := Multiply(shuffled, synapticWeights) // z
 
 		// Map activation function (sigmoid) over all weightedOutputs -> activations
