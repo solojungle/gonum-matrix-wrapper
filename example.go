@@ -55,7 +55,7 @@ func main() {
 		// ⎢t2 - a2⎥ = ⎢e2⎥
 		// ⎢t3 - a3⎥ = ⎢e3⎥
 		// ⎣t4 - a4⎦ = ⎣e4⎦
-		error := Subtract(target, activations) // der of cost w.r.t y
+		error := Subtract(target, activations)
 
 		// Map the derivative of sigmoid over the activations
 		// DerSigmoid(a)
@@ -63,7 +63,7 @@ func main() {
 		// ⎢fn(a2)⎥ = ⎢o2⎥
 		// ⎢fn(a3)⎥ = ⎢o3⎥
 		// ⎣fn(a4)⎦ = ⎣o4⎦
-		sigDer := Map(SigmoidDerivative, activations) // der of act w.r.t y
+		sigDer := Map(SigmoidDerivative, activations)
 
 		errorSidDer := MultiplyElems(error, sigDer)
 
@@ -73,7 +73,7 @@ func main() {
 		// ⎣1 1 0 0⎦			⎢d2⎥		  ⎣nw2⎦
 		//						⎢d3⎥
 		//						⎣d4⎦
-		transposedInputsErrorSidDer := Multiply(shuffled.T(), errorSidDer) // gradient descent
+		transposedInputsErrorSidDer := Multiply(shuffled.T(), errorSidDer)
 
 		// Apply the adjustments
 		adjustedWeights := Add(synapticWeights, transposedInputsErrorSidDer)
