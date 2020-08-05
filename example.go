@@ -65,7 +65,7 @@ func main() {
 		// ⎣fn(a4)⎦ = ⎣o4⎦
 		sigDer := Map(SigmoidDerivative, activations)
 
-		errorSidDer := MultiplyElems(error, sigDer)
+		errorSigDer := MultiplyElems(error, sigDer)
 
 		// Create the new weights
 		// Input.Transposed() *	Adjustments = New Weights
@@ -73,10 +73,10 @@ func main() {
 		// ⎣1 1 0 0⎦		⎢d2⎥	      ⎣nw2⎦
 		//			⎢d3⎥
 		//			⎣d4⎦
-		transposedInputsErrorSidDer := Multiply(shuffled.T(), errorSidDer)
+		transposedInputsErrorSigDer := Multiply(shuffled.T(), errorSigDer)
 
 		// Apply the adjustments
-		adjustedWeights := Add(synapticWeights, transposedInputsErrorSidDer)
+		adjustedWeights := Add(synapticWeights, transposedInputsErrorSigDer)
 
 		// Update weights
 		synapticWeights = Update(adjustedWeights)
