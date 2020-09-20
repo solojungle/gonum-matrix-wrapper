@@ -46,6 +46,41 @@ func MultiplyElems(A, B mat.Matrix) mat.Matrix {
 	return matrix
 }
 
+// Concat combines two same shaped matrices
+func Concat(A, B mat.Matrix) *mat.Dense {
+
+	if A == nil {
+		// Used to convert a mat.Matrix to a *mat.Dense
+		return Update(B)
+	}
+
+	rowsA, colsA := A.Dims()
+	rowsB, colsB := B.Dims()
+
+	if rowsA != rowsB || colsA != colsB {
+		panic("matrices must be the same shape")
+	}
+
+	// Adding columns to the new matrix
+	colsC := colsA + colsB
+
+	// Create buffer for new matrix
+	matrix := mat.NewDense(rowsA, colsC, nil)
+	matrix.Copy(A)
+
+	// Convert mat.Matrix into a mat.Dense
+	temp := Update(B)
+
+	// Fill rest of missing data
+	for i := 0; i < rowsB; i++ {
+		for j := 0; j < colsB; j++ {
+			matrix.Set(i, colsA+j, temp.RawMatrix().Data[i*colsB+j])
+		}
+	}
+
+	return matrix
+}
+
 // Map returns the result of a map onto a matrix A
 func Map(fn func(i, j int, v float64) float64, A mat.Matrix) mat.Matrix {
 	rows, cols := A.Dims()
@@ -55,7 +90,7 @@ func Map(fn func(i, j int, v float64) float64, A mat.Matrix) mat.Matrix {
 	return matrix
 }
 
-// Update returns a *Dense from a matrix A
+// Update converts a mat.matrix to a *mat.dense
 func Update(A mat.Matrix) *mat.Dense {
 	rows, cols := A.Dims()
 	matrix := mat.NewDense(rows, cols, nil)
@@ -72,14 +107,12 @@ func Print(A mat.Matrix) {
 // Shuffle returns two shuffled matrices, provide target and input to retain mapping
 func Shuffle(A, B mat.Matrix) (mat.Matrix, mat.Matrix) {
 	// Get matrix dims and create the matrix that is returned
-	rowsA, colsA := A.Dims()
-	input := mat.NewDense(rowsA, colsA, nil)
-	input.Copy(A)
+	input := Update(A)
+	rowsA, colsA := input.Dims()
 
 	// Get matrix dims and create the matrix that is returned
-	rowsB, colsB := B.Dims()
-	target := mat.NewDense(rowsB, colsB, nil)
-	target.Copy(B)
+	target := Update(B)
+	_, colsB := target.Dims()
 
 	// Create buffers
 	w, x := make([]float64, colsA), make([]float64, colsA)
