@@ -49,14 +49,17 @@ func MultiplyElems(A, B mat.Matrix) mat.Matrix {
 // Concat combines two same shaped matrices
 func Concat(A, B mat.Matrix) *mat.Dense {
 
+	// If you want to Concat to empty matrix; inside a loop
 	if A == nil {
 		// Used to convert a mat.Matrix to a *mat.Dense
 		return Update(B)
 	}
 
+	// Get dimensions of matrices
 	rowsA, colsA := A.Dims()
 	rowsB, colsB := B.Dims()
 
+	// Check if matrices are same shape
 	if rowsA != rowsB || colsA != colsB {
 		panic("matrices must be the same shape")
 	}
