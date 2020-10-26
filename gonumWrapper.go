@@ -46,11 +46,29 @@ func MultiplyElems(A, B mat.Matrix) mat.Matrix {
 	return matrix
 }
 
+// Scale multiplies the elements of A by n
+func Scale(n float64, A mat.Matrix) *mat.Dense {
+	rows, cols := A.Dims()
+	matrix := mat.NewDense(rows, cols, nil)
+	matrix.Scale(n, A)
+
+	return matrix
+}
+
+// ScalarAddition returns a scalar sum of a matrix and scalar (note: matrix scalar addition is mathematically not correct)
+func ScalarAddition(n float64, A mat.Matrix) *mat.Dense {
+	matrix := Map(func(i, j int, v float64) float64 {
+		return v + n
+	}, A)
+
+	return Update(matrix)
+}
+
 // Concat combines two same shaped matrices
 func Concat(A, B mat.Matrix) *mat.Dense {
-
 	// If you want to Concat to empty matrix; inside a loop
-	if A == nil {
+	// An interface value is equal to nil only if both its value and dynamic type are nil
+	if A == (*mat.Dense)(nil) {
 		// Used to convert a mat.Matrix to a *mat.Dense
 		return Update(B)
 	}
@@ -60,8 +78,8 @@ func Concat(A, B mat.Matrix) *mat.Dense {
 	rowsB, colsB := B.Dims()
 
 	// Check if matrices are same shape
-	if rowsA != rowsB || colsA != colsB {
-		panic("matrices must be the same shape")
+	if rowsA != rowsB {
+		panic("matrix rows must be the same length")
 	}
 
 	// Adding columns to the new matrix
@@ -168,6 +186,5 @@ func Sigmoid(i, j int, v float64) float64 {
 
 // SigmoidDerivative used in Map(), is the derivative of the Sigmoid function, useful for backpropogation
 func SigmoidDerivative(i, j int, v float64) float64 {
-	// Note: v is expected to have already been returned by Sigmoid()
-	return v * (1.0 - v)
+	return Sigmoid(i, j, v) * (1.0 - Sigmoid(i, j, v))
 }
